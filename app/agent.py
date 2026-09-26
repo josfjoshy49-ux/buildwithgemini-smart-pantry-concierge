@@ -74,7 +74,10 @@ def memory_bank_service_builder():
 
 async def generate_memories_callback(callback_context: CallbackContext):
     """WRITE: After each turn, send the session events to Memory Bank for fact extraction."""
-    await callback_context.add_session_to_memory()
+    try:
+        await callback_context.add_session_to_memory()
+    except Exception as e:
+        print(f"Memory Bank extraction warning: {e}")
     return None
 
 
@@ -471,7 +474,7 @@ instruction = schema_manager.generate_system_prompt(
 root_agent = Agent(
     name="root_agent",
     model=Gemini(
-        model="gemini-flash-latest",
+        model="gemini-2.5-flash",
         retry_options=types.HttpRetryOptions(attempts=3),
     ),
     instruction=instruction,
